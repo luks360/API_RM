@@ -1,0 +1,18 @@
+DROP TABLE IF EXISTS patients;
+DROP TABLE IF EXISTS requests;
+
+CREATE TABLE patients (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL
+);
+
+CREATE TABLE requests (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  medicament TEXT NOT NULL,
+  quant INT NOT NULL,
+  type TEXT NOT NULL,
+  status INT NOT NULL,
+  ID_patient INTEGER NOT NULL,
+  FOREIGN KEY (ID_patient) REFERENCES patients(id)
+);
