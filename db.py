@@ -20,6 +20,26 @@ def get_db():
 
     return g.db
 
+def get(one=False):
+    sql = ''' SELECT * FROM patients '''
+    cur = get_db().execute(sql)
+    rv = [dict((cur.description[i][0], value) \
+       for i, value in enumerate(row)) for row in cur.fetchall()]
+   
+    get_db().commit()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv
+
+def getId(args=(),one=False):
+    sql = ''' SELECT * FROM patients WHERE id = ? '''
+    cur = get_db().execute(sql, (str(args),))
+    rv = [dict((cur.description[i][0], value) \
+       for i, value in enumerate(row)) for row in cur.fetchall()]
+   
+    get_db().commit()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv
+
 def insert(args=()):
     sql = ''' INSERT INTO patients(name,email)
               VALUES(?,?) '''
@@ -41,6 +61,36 @@ def delete(args=()):
     cur.execute(sql, (args,))
     get_db().commit()
     return cur.lastrowid
+
+def getR(one=False):
+    sql = ''' SELECT * FROM requests '''
+    cur = get_db().execute(sql)
+    rv = [dict((cur.description[i][0], value) \
+       for i, value in enumerate(row)) for row in cur.fetchall()]
+   
+    get_db().commit()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv
+
+def getIdAllR(args=(),one=False):
+    sql = ''' SELECT * FROM requests WHERE ID_patient = ? '''
+    cur = get_db().execute(sql, str(args))
+    rv = [dict((cur.description[i][0], value) \
+       for i, value in enumerate(row)) for row in cur.fetchall()]
+   
+    get_db().commit()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv
+
+def getIdR(args=(),one=False):
+    sql = ''' SELECT * FROM requests WHERE ID_patient = ? AND id = ? '''
+    cur = get_db().execute(sql,(args[0],args[1],))
+    rv = [dict((cur.description[i][0], value) \
+       for i, value in enumerate(row)) for row in cur.fetchall()]
+   
+    get_db().commit()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv
 
 def insertR(args=()):
     sql = ''' INSERT INTO requests(medicament,quant,type,status,ID_patient)
