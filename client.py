@@ -16,18 +16,21 @@ def get_per_id(id):
 def insert(name, email):
     patient = {"name": name, "email": email}
     response = requests.post(api_url, json=patient)
-    print(response.json())
+    sucess = response.json()
+    print(sucess["sucess"])
 
 def put(id,name,email):
     url = api_url+"/"+str(id)
     patient = {"name": name, "email": email}
     response = requests.put(url, json=patient)
-    print(response.json())
+    sucess = response.json()
+    print(sucess["sucess"])
 
 def delete(id):
     url = api_url+"/"+str(id)
     response = requests.delete(url)
-    print(response.status_code)
+    sucess = response.json()
+    print(sucess["sucess"])
 
 ''' REQUESTS '''
 
@@ -50,55 +53,56 @@ def insertR(medicament,quant,type,status,fk_id):
     url = api_url+"/"+str(fk_id)+"/requests"
     request = {'medicament':medicament,'quant':quant,'type':type,'status':status}
     response = requests.post(url, json=request)
-    print(response.json())
+    sucess = response.json()
+    print(sucess["sucess"])
 
 def putR(medicament,quant,type,status,id,fk_id):
     url = api_url+"/"+str(fk_id)+"/requests/"+str(id)
     request = {'medicament':medicament,'quant':quant,'type':type,'status':status}
     response = requests.put(url, json=request)
-    print(response.json())
+    sucess = response.json()
+    print(sucess["sucess"])
 
 def deleteR(id,fk_id):
     url = api_url+"/"+str(fk_id)+"/requests/"+str(id)
     response = requests.delete(url)
-    print(response.status_code)
+    sucess = response.json()
+    print(sucess["sucess"])
+
 
 ''' TESTS INSERT PATIENTS '''
 # Register a new patient
-insert()
-insert()
+# insert("Lucas","lucas@gmail.com")
+# insert("Sebastião", "sebastiao@gmail.com")
+# insert("Demetrios", "demetrios@gmail.com")
+# insert("Raphael", "raphael@gmail.com")
+# insert("Jefferson", "jefferson@gmail.com")
 
 ''' TESTS INSERT REQUESTS '''
 # Register a new request
-insertR()
-insertR()
-
-''' TESTS GET PATIENTS '''
-# Get all registered patients
-get()
-# Get a specific patient by id
-get_per_id()
+# insertR("A",1,"gotas",1,1)
+# insertR("B",2,"comprimido",1,1)
+# insertR("C",2,"gotas",1,2)
+# insertR("D",2,"comprimido",1,2)
+# insertR("E",2,"gotas",1,3)
+# insertR("F",2,"comprimido",1,3)
+# insertR("G",2,"gotas",1,4)
+# insertR("H",2,"comprimido",1,4)
+# insertR("I",2,"gotas",1,5)
+# insertR("J",2,"comprimido",1,5)
 
 ''' TESTS GET REQUESTS '''
 # Gets all requests registered by patients
-getR()
+# getR()
 # Gets all requests registered by a specific patient
-get_pid_all()
+# get_pid_all(3)
 # Get a specific request registered from a specific patient
-get_pid_rid(1,3)
-
-''' TESTS PUT PATIENTS '''
-# Update patient data
-put()
+# get_pid_rid(1,2)
 
 ''' TESTS PUT REQUESTS '''
 # Update request data
-putR()
+# putR("Bo",5,"gotas",2,2,1)
 
 ''' TESTS DELETE REQUESTS '''
 # Deletes a specific request by id (it is necessary to inform the patient's id, in addition to the request itself)
-deleteR()
-
-''' TESTS DELETE PATIENTS '''
-# Delete a patient specified by id
-delete()
+# deleteR(2,1)
