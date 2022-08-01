@@ -1,0 +1,435 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "description": "sean",
+      "version": "1.0.0",
+      "title": "Seans-Python3-Flask-Rest-Boilerplate",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "servers": [
+      {
+        "url": "/"
+      }
+    ],
+    "tags": [
+      {
+        "name": "Patients request",
+        "description": "Example API for requesting medications requests"
+      }
+    ],
+    "paths": {
+      "/patients": {
+        "get": {
+          "tags": [
+            "Patients Request"
+          ],
+          "summary": "Returns Patients",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/components/schemas/patientRequest"
+              }
+            }
+          }
+        },
+        "post": {
+            "summary": "Create a new patient request system",
+            "tags": [
+              "Patients Request"
+            ],
+          "requestBody": {
+            "description": "Patient Request Post Object",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/patientRequestPostBody"
+                }
+              }
+            }
+          },
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "201": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            },
+            "400": {
+              "description": "Failed. Bad post data."
+            }
+          }
+        }
+      },
+      "/patients/{id}": {
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the cat that we want to match",
+            "type": "string"
+          }
+        ],
+        "get": {
+          "tags": [
+            "Patients Request"
+          ],
+          "summary": "Get patient request with given ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "description": "Patient Request id",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/components/schemas/patientRequest"
+              }
+            },
+            "400": {
+              "description": "Failed. Misunderstood Request."
+            },
+            "404": {
+              "description": "Failed. Book request not found."
+            }
+          }
+        },
+        "put": {
+          "summary": "edit a patient request by ID",
+          "tags": [
+            "Patients Request"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "description": "Patient Request id",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "Patient Request Object",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/patientRequest"
+                }
+              }
+            }
+          },
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/components/schemas/patientRequest"
+              }
+            },
+            "400": {
+              "description": "Failed. Bad post data."
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete patient Request by ID",
+          "tags": [
+            "Patients Request"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "description": "Patient Request Id",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            },
+            "400": {
+              "description": "Failed. Misunderstood Request."
+            },
+            "404": {
+              "description": "Failed. Book Request not found."
+            }
+          }
+        }
+      }, 
+      "/patients/{id}/requests": {
+        "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "description": "Patient Request Id",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ],
+        "post": {
+            "summary": "Create a new drug requisition",
+            "tags": [
+              "Request medicament"
+            ],
+          "requestBody": {
+            "description": "Medicament Request Post Object",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/medicamentRequestPostBody"
+                }
+              }
+            }
+          },
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "201": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            },
+            "400": {
+              "description": "Failed. Bad post data."
+            }
+          }
+        },
+        "get": {
+          "summary": "Get patient request with given ID",
+          "tags": [
+            "Request medicament"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "description": "Patient Request id",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/components/schemas/medicamentRequestPostBody"
+              }
+            },
+            "400": {
+              "description": "Failed. Misunderstood Request."
+            },
+            "404": {
+              "description": "Failed. Book request not found."
+            }
+          }
+        },
+        "put":{
+          "summary": "edit a patient request by ID",
+          "tags": [
+            "Request medicament"
+          ],
+          "requestBody": {
+            "description": "Request Object",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/medicamentRequestPutBody"
+                }
+              }
+            }
+          },
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/components/schemas/medicamentRequestPutBody"
+              }
+            },
+            "400": {
+              "description": "Failed. Bad post data."
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete patient Request by ID",
+          "tags": [
+            "Request medicament"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "description": "Patient Request Id",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            },
+            "400": {
+              "description": "Failed. Misunderstood Request."
+            },
+            "404": {
+              "description": "Failed. Book Request not found."
+            }
+          }
+        }
+
+      },
+      "/patients/requests":{
+        "get": {
+          "tags": [
+            "Request medicament"
+          ],
+          "summary": "Returns Request",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/components/schemas/medicamentRequestPostBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "id": {
+          "properties": {
+            "token": {
+              "type": "string"
+            }
+          }
+        },
+        "patientRequestPostBody": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "format": "string"
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        },
+        "medicamentRequestPostBody": {
+            "type": "object",
+            "properties": {
+              "medicament": {
+                "type": "string",
+                "format": "string"
+              },
+              "quant": {
+                "type": "integer",
+                "format": "integer"
+              },
+              "type": {
+                "type": "string",
+              "format": "string"
+              },
+              "status": {
+                "type": "integer",
+                "format": "integer"
+              },
+              "id_patient": {
+                "type": "integer",
+                "format": "integer"
+              }
+            }
+          },
+          "medicamentRequestPutBody": {
+            "type": "object",
+            "properties": {
+              "medicament": {
+                "type": "string",
+                "format": "string"
+              },
+              "quant": {
+                "type": "integer",
+                "format": "integer"
+              },
+              "type": {
+                "type": "string",
+              "format": "string"
+              },
+              "status": {
+                "type": "integer",
+                "format": "integer"
+              }
+            }
+          },
+        "patientRequest": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "format": "string"
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        },
+        "patientRequests": {
+          "type": "object",
+          "properties": {
+            "patientRequest": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/patientRequest"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
