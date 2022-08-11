@@ -149,6 +149,8 @@ def add_request(fk_id):
         type = request_data['type']
         status = request_data['status']
         id_patient = request_data['id_patient'] # Essa variável vai receber o fk_id
+        contact = request_data['contact']
+        name = request_data['name']
         s = "SELECT * FROM patients"
         cur.execute(s)
         list_patients = cur.fetchall()
@@ -157,7 +159,7 @@ def add_request(fk_id):
             list.append(dict(row))
         for i in list:
             if i.get('id') == fk_id:  
-                cur.execute("INSERT INTO requests (medicament, quant, type, status, id_patient) VALUES (%s,%s, %s, %s, %s);", (medicament, quant, type, status, id_patient))
+                cur.execute("INSERT INTO requests (medicament, quant, type, status, id_patient, contact, name) VALUES (%s,%s, %s, %s, %s, %s, %s);", (medicament, quant, type, status, id_patient, contact,name))
                 conn.commit()
                 return jsonify({"success": 'Patients'}), 201
         else:
