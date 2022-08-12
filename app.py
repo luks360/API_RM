@@ -135,8 +135,27 @@ def get_requests_allP(fk_id):
         return jsonify(list),200
 
 
-# @app.route("/patients/<int:fk_id>/requests/<int:id>",methods=['GET'])
-# def get_request_esP(fk_id,id):
+@app.route("/patients/<int:id>/requests/status",methods=['PATCH'])
+def update_request_esP(id):
+     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+     if request.method == 'PATCH':
+        request_data = request.get_json()
+
+        status = request_data['status']
+        print(status)
+        s = "SELECT * FROM requests"
+        cur.execute(s)
+        list_requests = cur.fetchall()
+        list = []
+        for row in list_requests:
+            list.append(dict(row))
+        for i in list:
+            if i.get('id') == id: 
+                cur.execute("UPDATE requests SET status = %s WHERE id = %s", (status,id), )
+                conn.commit()
+                return jsonify({'success': 'Requests'}), 200
+        else:
+            return jsonify({'error': 'Invalid'}), 400
     
 
 @app.route("/patients/<int:fk_id>/requests",methods=['POST'])
