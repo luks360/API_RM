@@ -1,4 +1,6 @@
-# from asyncio.windows_events import NULL
+
+from asyncio.windows_events import NULL
+
 import psycopg2
 import psycopg2.extras
 from flask import Flask, jsonify, request
