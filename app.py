@@ -1,3 +1,4 @@
+# from asyncio.windows_events import NULL
 import psycopg2
 import psycopg2.extras
 from flask import Flask, jsonify, request
@@ -38,7 +39,7 @@ def get_patients():
 
         return jsonify({"error": "No patients"}),400    
 
-@app.route("/patients/<int:id>",methods=['GET'])
+@app.route("/patients/<string:id>",methods=['GET'])
 def get_patient_id(id):
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute('SELECT * FROM patients WHERE id = %s', (id, ))
@@ -57,6 +58,7 @@ def add_patients():
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     if request.method == 'POST':
         request_data = request.get_json()
+        id = request_data['id']
         name = request_data['name']
         email = request_data['email']
         s = "SELECT * FROM patients"
@@ -69,11 +71,11 @@ def add_patients():
             if i.get('email') == email:
                 return jsonify({"error": "No patients found"})
         else:
-            cur.execute("INSERT INTO patients (name, email) VALUES (%s,%s)", (name, email))
+            cur.execute("INSERT INTO patients (id, name, email) VALUES (%s,%s,%s)", (id, name, email))
             conn.commit()
             return jsonify({"success": 'Patients'}), 201
     
-@app.route("/patients/<int:id>",methods=['PUT'])
+@app.route("/patients/<string:id>",methods=['PUT'])
 def put_patient(id):
      cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
      if request.method == 'PUT':
@@ -94,7 +96,7 @@ def put_patient(id):
         else:
             return jsonify({'error': 'Invalid'}), 400
 
-@app.route("/patients/<int:id>",methods=['DELETE'])
+@app.route("/patients/<string:id>",methods=['DELETE'])
 def delete_patient(id):
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("DELETE FROM patients WHERE id = %s RETURNING id;", [id])
@@ -120,10 +122,11 @@ def get_requests():
     else: 
         return jsonify({'error': 'Invalid'}), 400
 
-@app.route("/patients/<int:fk_id>/requests",methods=['GET'])
+@app.route("/patients/<string:fk_id>/requests",methods=['GET'])
 def get_requests_allP(fk_id):
+    l = request.args.get('limit', default='NULL')
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    cur.execute('SELECT * FROM requests WHERE id_patient = %s', (fk_id, ))
+    cur.execute('SELECT * FROM requests WHERE id_patient = %s ORDER BY id DESC LIMIT {}'.format(l), (fk_id,))
     data = cur.fetchall()
     list = []
     for row in data:
@@ -135,14 +138,13 @@ def get_requests_allP(fk_id):
         return jsonify(list),200
 
 
-@app.route("/patients/<int:id>/requests/status",methods=['PATCH'])
+@app.route("/patients/requests/<int:id>/status",methods=['PATCH'])
 def update_request_esP(id):
      cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
      if request.method == 'PATCH':
         request_data = request.get_json()
-
         status = request_data['status']
-        print(status)
+        # print(status)
         s = "SELECT * FROM requests"
         cur.execute(s)
         list_requests = cur.fetchall()
@@ -150,6 +152,7 @@ def update_request_esP(id):
         for row in list_requests:
             list.append(dict(row))
         for i in list:
+            i.get('id')
             if i.get('id') == id: 
                 cur.execute("UPDATE requests SET status = %s WHERE id = %s", (status,id), )
                 conn.commit()
@@ -158,7 +161,7 @@ def update_request_esP(id):
             return jsonify({'error': 'Invalid'}), 400
     
 
-@app.route("/patients/<int:fk_id>/requests",methods=['POST'])
+@app.route("/patients/<string:fk_id>/requests",methods=['POST'])
 def add_request(fk_id):
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     if request.method == 'POST':
@@ -184,7 +187,7 @@ def add_request(fk_id):
         else:
             return jsonify({"error": "No patients"}), 400
 
-@app.route("/patients/<int:id>/requests",methods=['PUT'])
+@app.route("/patients/requests/<int:id>",methods=['PUT'])
 def put_request(id):
      cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
      if request.method == 'PUT':
@@ -207,7 +210,7 @@ def put_request(id):
         else:
             return jsonify({'error': 'Invalid'}), 400
     
-@app.route("/patients/<int:id>/requests",methods=['DELETE'])
+@app.route("/patients/requests/<int:id>",methods=['DELETE'])
 def delete_request(id):
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("DELETE FROM requests WHERE id = %s RETURNING id;", [id])
@@ -231,7 +234,7 @@ def get_offers():
     if list_offers:
         return jsonify(list), 200
     else: 
-        return jsonify({'error': 'Invalid'}), 400
+        return jsonify(list), 200
 
 @app.route("/requests/<int:fk_id>/offers", methods=["GET"])
 def get_all_offers_specific(fk_id):
@@ -254,10 +257,11 @@ def add_offers(fk_id):
         request_data = request.get_json()
         print(request_data)
         medicament = request_data['medicament']
+        quant = request_data['quant']
         type = request_data['type']
         price = request_data['price']
         status = request_data['status']
-        id_request = request_data['id_request'] # Essa variável vai receber o fk_id
+        id_request = fk_id # Essa variável vai receber o fk_id
         s = "SELECT * FROM requests"
         cur.execute(s)
         list_patients = cur.fetchall()
@@ -266,7 +270,7 @@ def add_offers(fk_id):
             list.append(dict(row))
         for i in list:
             if i.get('id') == fk_id:  
-                cur.execute("INSERT INTO offers (medicament, type, price, status, id_request) VALUES (%s,%s, %s, %s, %s);", (medicament, type, price, status, id_request))
+                cur.execute("INSERT INTO offers (medicament, quant,type, price, status, id_request) VALUES (%s,%s, %s, %s, %s, %s);", (medicament,quant, type, price, status, id_request))
                 conn.commit()
                 return jsonify({"success": 'offers'}), 201
         else:
@@ -292,6 +296,29 @@ def put_offers(id):
                 cur.execute("UPDATE offers SET medicament = %s,  type = %s, price = %s, status = %s  WHERE id = %s", (medicament, type, price, status,id), )
                 conn.commit()
                 return jsonify({'success': 'Offers'}), 200
+        else:
+            return jsonify({'error': 'Invalid'}), 400
+
+
+@app.route("/patients/offers/<int:id>/status",methods=['PATCH'])
+def update_offers_esP(id):
+     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+     if request.method == 'PATCH':
+        request_data = request.get_json()
+        status = request_data['status']
+        print(status)
+        s = "SELECT * FROM offers"
+        cur.execute(s)
+        list_offers = cur.fetchall()
+        list = []
+        for row in list_offers:
+            list.append(dict(row))
+        for i in list:
+            i.get('id')
+            if i.get('id') == id: 
+                cur.execute("UPDATE offers SET status = %s WHERE id = %s", (status,id), )
+                conn.commit()
+                return jsonify({'success': 'offers'}), 200
         else:
             return jsonify({'error': 'Invalid'}), 400
 
@@ -327,12 +354,5 @@ def error_415(e):
     return "tipo de mídia não suportado"
 
 if __name__ == '__main__':
-    init_db = False
-    
-    db.init_app(app)
-    
-    if init_db:
-        with app.app_context():
-            db.init_db()
     
     app.run(debug=True,host="0.0.0.0")
