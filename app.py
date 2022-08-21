@@ -1,5 +1,5 @@
 
-from asyncio.windows_events import NULL
+# from asyncio.windows_events import NULL
 
 import psycopg2
 import psycopg2.extras
@@ -40,6 +40,64 @@ def get_patients():
     else:
 
         return jsonify({"error": "No patients"}),400    
+
+@app.route("/patients/report",methods=['GET'])
+def repor_all():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    s = "select id_patient, count(id_patient) AS ""quant_total"",(select count(status) from requests where status = 1) AS ""quant_andamento"",(select count(status) from requests where status = 2) AS ""quant_concluido"",(select count(status) from requests where status = 3) AS ""quant_cancelado"" FROM requests group by id_patient"
+    cur.execute(s)
+    list_report = cur.fetchall()
+    x = "select * from requests"
+    cur.execute(x)
+    list_request = cur.fetchall()
+    list = []
+    list_req = []
+    confirm = 0
+    canceled = 0
+    progress = 0
+    for row in list_report:
+        list.append(dict(row))
+    for row in list_request:
+        list_req.append(dict(row))    
+    
+    for row in list:
+        row['quant_andamento'] = 0
+        row['quant_cancelado'] = 0
+        row['quant_concluido'] = 0
+
+    for row in list:
+        confirm = 0
+        canceled = 0
+        progress = 0
+        for i in list_req:
+
+            if(row['id_patient'] == i['id_patient'] and i['status'] == 1):
+                print('1')
+                print(row['id_patient'])
+                progress += 1
+                row['quant_andamento'] = progress
+            if(row['id_patient'] == i['id_patient'] and i['status'] == 2):
+                print('2')
+                print(row['id_patient'])
+                confirm += 1
+                row['quant_concluido'] = confirm
+                    
+            if(row['id_patient'] == i['id_patient'] and i['status'] == 3):
+                print('3')
+                print(row['id_patient'])
+                canceled += 1
+                row['quant_cancelado'] = canceled
+        
+       
+
+
+    if list_report:
+
+        return jsonify(list),200
+    else:
+
+        return jsonify({"error": "No report"}),400   
+
 
 @app.route("/patients/<string:id>",methods=['GET'])
 def get_patient_id(id):
