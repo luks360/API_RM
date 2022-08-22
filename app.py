@@ -375,8 +375,30 @@ def update_offers_esP(id):
             list.append(dict(row))
         for i in list:
             i.get('id')
-            if i.get('id') == id: 
-                cur.execute("UPDATE offers SET status = %s WHERE id = %s", (status,id), )
+            if i.get('id_request') == id: 
+                cur.execute("UPDATE offers SET status = %s WHERE id_request = %s", (status,id), )
+                conn.commit()
+                return jsonify({'success': 'offers'}), 200
+        else:
+            return jsonify({'error': 'Invalid'}), 400
+
+@app.route("/patients/offers/<int:id>/price",methods=['PATCH'])
+def update_price_esP(id):
+     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+     if request.method == 'PATCH':
+        request_data = request.get_json()
+        price = request_data['price']
+        print(price)
+        s = "SELECT * FROM offers"
+        cur.execute(s)
+        list_offers = cur.fetchall()
+        list = []
+        for row in list_offers:
+            list.append(dict(row))
+        for i in list:
+            i.get('id')
+            if i.get('id_request') == id: 
+                cur.execute("UPDATE offers SET price = %s WHERE id_request = %s", (price,id), )
                 conn.commit()
                 return jsonify({'success': 'offers'}), 200
         else:
