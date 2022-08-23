@@ -415,6 +415,20 @@ def delete_offers(id):
     else:
         return jsonify({'error': 'Invalid'}), 400 
 
+@app.route("/requests/auditoria", methods=['GET'])
+def get_auditoria():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    s = "SELECT * FROM customer_auditoria"
+    cur.execute(s)
+    list_offers = cur.fetchall()
+    list = []
+    for row in list_offers:
+        list.append(dict(row))
+    if list_offers:
+        return jsonify(list), 200
+    else: 
+        return jsonify(list), 200
+
 @app.errorhandler(400)
 def error_400(e):
     return "solicitação inválida"
