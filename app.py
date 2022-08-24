@@ -366,7 +366,7 @@ def update_offers_esP(id):
      if request.method == 'PATCH':
         request_data = request.get_json()
         status = request_data['status']
-        print(status)
+        print(id)
         s = "SELECT * FROM offers"
         cur.execute(s)
         list_offers = cur.fetchall()
