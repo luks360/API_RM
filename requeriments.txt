@@ -1,2 +1,5 @@
 flask
 requests
+psycopg2
+flask_cors
+flask_swagger_ui
