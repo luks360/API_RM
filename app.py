@@ -270,17 +270,6 @@ def put_request(id):
         else:
             return jsonify({'error': 'Invalid'}), 400
     
-@app.route("/patients/requests/<int:id>",methods=['DELETE'])
-def delete_request(id):
-    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    cur.execute("DELETE FROM requests WHERE id = %s RETURNING id;", [id])
-    result = cur.fetchall()
-    conn.commit()
-    if result:
-        return jsonify({'success': 'Requests'}), 204
-    else:
-        return jsonify({'error': 'Invalid'}), 400 
-
 # Crud de offers
 @app.route("/requests/offers", methods=['GET'])
 def get_offers():
@@ -403,17 +392,6 @@ def update_price_esP(id):
                 return jsonify({'success': 'offers'}), 200
         else:
             return jsonify({'error': 'Invalid'}), 400
-
-@app.route("/requests/<int:id>/offers",methods=['DELETE'])
-def delete_offers(id):
-    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    cur.execute("DELETE FROM offers WHERE id = %s RETURNING id;", [id])
-    result = cur.fetchall()
-    conn.commit()
-    if result:
-        return jsonify({'success': 'offers'}), 204
-    else:
-        return jsonify({'error': 'Invalid'}), 400 
 
 @app.route("/requests/auditoria", methods=['GET'])
 def get_auditoria():
